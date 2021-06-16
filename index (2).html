@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>BOOST QUIZ</title>
+        
+        
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous">
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+        <script src="/static/static/Number-Rolling-Animation-jQuery-numberAnimate/numberAnimate.js"></script>
+
+        <style>
+            html, body{
+                background-color: black;
+                color:#fff;
+            }
+            div,h1, h2, h3, h4{
+                text-align: center;
+            }
+            h1{
+                font-size:60px;
+                border-bottom: 1px solid #eee;
+            }
+            .game-box img{
+                width: 100%;
+                height: 0px;
+            }                    
+            button{
+                width: 100%;
+                height: 100px;
+            }
+            p{
+                font-size:30px;
+            }
+            #question-section{
+                transition: opacity 0s, opacity 0.5s linear;
+            }
+            #spinner{
+                position: absolute;
+                top: 0;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                margin: auto;
+            }
+            @media only screen and (max-device-width: 768px) {
+                h2{
+                    font-size:40px;
+                }
+                p{
+                    font-size:50px;
+                }
+                button{
+                    font-size:45px !important;
+                }
+            }
+            
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="row" style="padding:20px;">
+                <h1>정신건강 테스트</h1>
+            </div>
+            <p style="font-size:20px;">
+                아래의 문제를 읽고 최근 2주간 자신에게 해당된다고 생각하는 버튼을 클릭해주세요.
+            </p>
+            <button type="button" id='start-btn' class="btn btn-primary btn-lg">START</button>
+            <div class="spinner-grow" id='spinner' role="status" style="display:none;">
+                <span class="sr-only"></span>
+            </div>
+            <div class="row justify-content-lg-center">
+                <div class="col col-lg-auto" id="question-section" style="opacity:0" data-started='false'>
+                    <h2>문제 <span id="q-number">1</span></h2>
+                    <div class="game-box">
+                        <div class="">
+                            <img id='question-image' class="rounded mx-auto d-block" 
+                            src="https://source.unsplash.com/random/400x300"/>
+                            <p id="question-text"><span id="tag"></span></p>
+                        </div>
+                        <div class="row" style="margin-top:20px;">
+                            <div class="col-md-3 col-sm-6">
+                                <button type="button" data-answer='0' class="btn btn-primary btn-lg answer-btn">없음</button>
+                            </div>
+                            <div class="col-md-3 col-sm-6">
+                                <button type="button" data-answer='1' class="btn btn-success btn-lg answer-btn">2-6일</button>
+                            </div>
+                            <div class="col-md-3 col-sm-6">
+                                <button type="button" data-answer='2' class="btn btn-warning btn-lg answer-btn">7-12일</button>
+                            </div>
+                            <div class="col-md-3 col-sm-6">
+                                <button type="button" data-answer='3' class="btn btn-info btn-lg answer-btn">거의 매일</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+                <div id="result" style="display:none;">
+                    <h3>모델이 예측한 당신의 응답입니다.</h3>
+                    <h4>1. 초조하거나 불안하거나 조마조마하게 느낀다. : <span id="value1"></span></h4><br>
+                    <h4>2. 걱정하는 것을 멈추거나 조절할 수가 없다. : <span id="value2"></span></h4><br>
+                    <h4>3. 여러 가지 것들에 대해 걱정을 너무 많이 한다. : <span id="value3"></span></h4><br>
+                    <h4>4. 편하게 있기가 어렵다. : <span id="value4"></span></h4><br>
+                    <h4>5. 너무 안절부절못해서 가만히 있기가 힘들다. : <span id="value5"></span></h4><br>
+                    <h4>6. 쉽게 짜증이 나거나 쉽게 성을 내게 된다. : <span id="value6"></span></h4><br>
+                    <h4>7. 마치 끔찍한 일이 생길 것처럼 두렵게 느껴진다. : <span id="value7"></span></h4>
+                    <p>새로고침 후에 다시 시도해보세요!</p>
+                </div>
+                
+            </div>
+            
+
+        </div>
+        <script>
+            var QUESTION_LIST = [
+                    {'q_content':'평소 하던 일에 대한 흥미가 없어지거나 즐거움을 느끼지 못했다.'},
+                    {'q_content':'기분이 가라앉거나, 우울하거나, 희망이 없다고 느꼈다.'},
+                    {'q_content':'잠들기가 어렵거나 자주 깼다/혹은 너무 많이 잤다.'},
+                    {'q_content':'피곤하고 기운이 없었다.'},
+                    {'q_content':'평소보다 식욕이 줄었다/혹은 평소보다 많이 먹었다.'},
+                    {'q_content':'내가 잘못 했거나, 실패했다는 생각이 들었다/혹은 자신과 가족을 실망시켰다고 생각했다.'},
+                    {'q_content':'신문을 읽거나 TV를 보는 것과 같은 일상적인 일에도 집중 할 수가 없었다.'},
+                    {'q_content':'다른 사람들이 눈치 챌 정도로 평소보다 말과 행동이 느려졌다/혹은 너무 안절부절 못해서 가만히 앉아 있을 수 없었다.'},
+                    {'q_content':'차라리 죽는 것이 더 낫겠다고 생각했다/혹은 자해할 생각을 했다.'},
+                ];
+            var ANSWER_LIST = [
+                '전혀 방해 받지 않았다',
+                '며칠 동안 방해 받았다',
+                '2주 중 절반 이상은 방해 받았다',
+                '거의 매일 방해 받았다',
+            ];
+            var answers = [];
+            function getRandomIntInclusive(min, max) {
+                min = Math.ceil(min);
+                max = Math.floor(max);
+                return Math.floor(Math.random() * (max - min + 1)) + min; //최댓값도 포함, 최솟값도 포함
+            }
+            function set_question(index){
+                
+                let q_content = QUESTION_LIST[index].q_content;
+                // $('#tag').text(q_content);
+                document.querySelector("#tag").innerHTML = q_content;
+                document.querySelector("#q-number").innerHTML = index+1;
+                
+                
+                
+                //이미지 URL을 다르게 해야 짧은 시간 내의 재요청시에도 다른 이미지가 나옴
+                var height = getRandomIntInclusive(290,310);
+                var width = getRandomIntInclusive(390,410);
+                var url = `https://source.unsplash.com/random/${width}x${height}`;
+                
+                
+                document.querySelector("#question-image").src = url;
+                
+                
+            }
+            
+            function get_score(){
+                
+                
+                
+                for (var i = 0; i < QUESTION_LIST.length; i++) {
+                    QUESTION_LIST[i]['answer'] = answers[i]
+                    
+                }
+
+                fetch('/get_score', {
+                    method: 'POST', // or 'PUT'
+                    body: JSON.stringify(QUESTION_LIST), // data can be `string` or {object}!
+                    headers:{
+                        'Content-Type': 'application/json'
+                    }
+                }).then(res => res.json())
+                .then(response => {
+                    var score = response;
+                    document.querySelector("#spinner").style.display = 'none';
+                    document.querySelector("#question-section").style.display = 'none';
+                    document.querySelector("#result").style.display = 'block';
+                    var obj = document.getElementById("value1");
+                    //obj.innerHTML = score['data'][0]
+                    obj.innerHTML = ANSWER_LIST[parseInt(score['data'][0])];
+                    var obj = document.getElementById("value2");
+                    obj.innerHTML = ANSWER_LIST[parseInt(score['data'][1])];
+                    var obj = document.getElementById("value3");
+                    obj.innerHTML = ANSWER_LIST[parseInt(score['data'][2])];
+                    var obj = document.getElementById("value4");
+                    obj.innerHTML = ANSWER_LIST[parseInt(score['data'][3])];
+                    var obj = document.getElementById("value5");
+                    obj.innerHTML = ANSWER_LIST[parseInt(score['data'][4])];
+                    var obj = document.getElementById("value6");
+                    obj.innerHTML = ANSWER_LIST[parseInt(score['data'][5])];
+                    var obj = document.getElementById("value7");
+                    obj.innerHTML = ANSWER_LIST[parseInt(score['data'][6])];
+                    
+                })
+                .catch(error => console.error('Error:', error));
+
+
+            }
+
+            var isClciked = false;
+            document.addEventListener('click', function (event) {
+                if (!event.target.closest('.btn')) return;
+                if (event.target.closest('.answer-btn')){
+                    if (isClciked) return;
+                    isClciked=true;
+                    
+                    event.target.dataset.clicked = true;
+                    var answer = event.target.dataset.answer;
+                    var index = parseInt(document.querySelector("#q-number").innerHTML);
+                        
+                    answers.push(answer)
+                    if (index==9){
+                        setTimeout(function(){
+                            get_score();
+                        },1000);
+                    }else{
+                        setTimeout(function(){
+                            set_question(index);
+                        },500);
+                    }
+                    document.querySelector("#spinner").style.display = 'inline-block';
+                    document.querySelector("#question-section").style.opacity = 0;
+                }else if (event.target.closest('#start-btn')){
+                    document.querySelector("#question-section").dataset.started = true;
+                    document.querySelector("#start-btn").style.display='none';
+                    document.querySelector("#spinner").style.display = 'inline-block';
+                    set_question(0);
+                }
+            });
+            
+            document.querySelector("#question-image").onload = function() {
+                if (document.querySelector("#question-section").dataset.started !=='false'){
+                    document.querySelector("#spinner").style.display = 'none';
+                    document.querySelector("#question-section").style.opacity = 1;
+                    isClciked=false;
+                }
+            }
+        </script>
+    </body>
+</html>
