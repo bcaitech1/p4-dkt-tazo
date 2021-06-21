@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>범불안장애 7문항 척도 예측</title>
+        <title>우울증 건강설문과 범불안장애 문항 척도 예측</title>
         
         
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous">
@@ -10,8 +10,8 @@
 
         <style>
             html, body{
-                background-color: rgb(50, 50, 50);
-                color: rgb(240, 240, 240);
+                background-color: rgb(255, 255, 255);
+                color: rgb(0, 0, 0);
             }
             div,h1, h2, h3{
                 text-align: center;
@@ -23,12 +23,17 @@
             }
             h5{
                 text-align: left;
+                text-indent: -2em;
+                margin-left: 2em;
                 font-size:20px;
             }
             h1{
-                font-size:50px;
-                border-bottom: 1px solid #eee;
-            }                                
+                font-size:35px;
+                border-bottom: 2px solid #000033;
+            }
+            table, th, td {
+                border-bottom: 2px solid #333;
+            }
             button{
                 width: 100%;
                 height: 100px;
@@ -63,30 +68,33 @@
     </head>
     <body>
         <div class="container">
-            <div class="row" style="padding:20px;">
-                <h1>범불안장애 7문항 척도 예측</h1>
+            <div class="row">
+                <h1>우울증 건강설문 9문항을 이용한<br> 범불안장애 설문 7문항 순서 추천</h1>
             </div>
             <div id='start-string'>
                 <p>개인정보 수집 및 이용에 대한 안내</p>
-                <h5>1. 목적: 부스트캠프 AI Tech 1기 네트워킹데이 DKT-13 팀 발표 시연 및 모델 학습</h5>
-                <h5>2. 항목: 문항 반응 정보, 응답 시점</h5>
+                <h5>1. 개인정보 수집 항목: 문항 번호, 문항에 대한 응답</h5>
+                <h5>2. 개인정보 이용 목적:<br>
+                    부스트캠프 AI Tech 1기 네트워킹데이 DKT-13 팀 발표 시연 서비스에 이용<br>
+                    문항 반응 정보를 이용한 서비스 모델의 재학습에 이용
+                </h5>
                 <h5>3. 보유기간: 6월 22일 23:55 까지</h5>
             </div>
-            <button style="width: 70%" type="button" id='start-btn' class="btn btn-secondary">동의하고 시작하기</button>
+            <button style="width: 100%" type="button" id='start-btn' class="btn btn-secondary">동의하고 시작하기</button>
             <div class="spinner-grow" id='spinner' role="status" style="display:none;">
                 <span class="sr-only"></span>
             </div>
             <div class="row justify-content-lg-center">
                 <div class="col col-lg-auto" id="question-section" style="opacity:0" data-started='false'>
                     <p style="font-size:20px;">
-                        아래의 문제를 읽고 최근 2주간 자신에게 해당된다고 생각하는 버튼을 클릭해주세요.
+                        최근 2주간 자신에게 해당된다고 생각되는 버튼을 눌러주세요.
                     </p>
-                    <h2><span id="q-number">1</span>번 문항</h2>
+                    <h2 style="font-size:0px"><span id="q-number">1</span>번 문항</h2>
                     <div class="game-box">
                         <div class="">
                             <p id="question-text"><span id="tag"></span></p>
                         </div>
-                        <div class="row" style="margin-top:20px;">
+                        <div class="row" style="width : 100% margin-top:20px;">
                             <div class="col-md-3 col-sm-6">
                                 <button type="button" data-answer='0' class="btn btn-secondary btn-lg answer-btn"><span id='butt1' style="pointer-events: none;"></span></button>
                             </div>
@@ -103,64 +111,78 @@
                     </div>                    
                 </div>
                 <div id="result" style="display:none;">
-                    <h3>범불안장애 7문항에 대한 응답자의 응답과 모델의 예측은 다음과 같습니다.</h3>
                     <div style="width: 80% margin-top:20px;">
                         <h4>
-                            PHQ문항의 점수 : <span id="PHQ_SUM"></span> GAD문항의 점수 : <span id="GAD_SUM"></span>
+                            우울중 건강설문의 점수 : <span id="PHQ_SUM"></span>, 범불안장애 설문의 점수 : <span id="GAD_SUM"></span>
                         </h4>
-                        <h4>제시된 문항 순서 : 
-                        <span id="pred1"></span>
-                        <span id="pred2"></span>
-                        <span id="pred3"></span>
-                        <span id="pred4"></span>
-                        <span id="pred5"></span>
-                        <span id="pred6"></span>
+                        <h4>모델이 추천한 범불안장애 설문 문항 순서 : 
+                        <span id="pred1"></span>,
+                        <span id="pred2"></span>,
+                        <span id="pred3"></span>,
+                        <span id="pred4"></span>,
+                        <span id="pred5"></span>,
+                        <span id="pred6"></span>,
                         <span id="pred7"></span>
                         </h4>
-                        <h4>
-                            문항 : <span id="gad-q1"></span><br>
-                            유저의 응답은 <span id="user-a1"></span>이고
-                            모델의 예측은 <span id="model-p1"></span>입니다.<br>
-                            모델은 예측에 <span id="model_tf1"></span>했습니다.
-                        </h4>
-                        <h4>
-                            문항 : <span id="gad-q2"></span><br>
-                            유저의 응답은 <span id="user-a2"></span>이고
-                            모델의 예측은 <span id="model-p2"></span>입니다.<br>
-                            모델은 예측에 <span id="model_tf2"></span>했습니다.
-                            </h4>
-                        <h4>
-                            문항 : <span id="gad-q3"></span><br>
-                            유저의 응답은 <span id="user-a3"></span>이고
-                            모델의 예측은 <span id="model-p3"></span>입니다.<br>
-                            모델은 예측에 <span id="model_tf3"></span>했습니다.
-                            </h4>
-                        <h4>
-                            문항 : <span id="gad-q4"></span><br>
-                            유저의 응답은 <span id="user-a4"></span>이고
-                            모델의 예측은 <span id="model-p4"></span>입니다.<br>
-                            모델은 예측에 <span id="model_tf4"></span>했습니다.
-                            </h4>
-                        <h4>
-                            문항 : <span id="gad-q5"></span><br>
-                            유저의 응답은 <span id="user-a5"></span>이고
-                            모델의 예측은 <span id="model-p5"></span>입니다.<br>
-                            모델은 예측에 <span id="model_tf5"></span>했습니다.
-                            </h4>
-                        <h4>
-                            문항 : <span id="gad-q6"></span><br>
-                            유저의 응답은 <span id="user-a6"></span>이고
-                            모델의 예측은 <span id="model-p6"></span>입니다.<br>
-                            모델은 예측에 <span id="model_tf6"></span>했습니다.
-                            </h4>
-                        <h4>
-                            문항 : <span id="gad-q7"></span><br>
-                            유저의 응답은 <span id="user-a7"></span>이고
-                            모델의 예측은 <span id="model-p7"></span>입니다.<br>
-                            모델은 예측에 <span id="model_tf7"></span>했습니다.
-                        </h4>
+                        <h3>범불안장애 7문항에 대한 사용자의 응답과 모델의 예측은 다음과 같습니다.</h3>
+                        <table border="1", width = "100%", bgcolor = "F5F5F5">
+                            <th bgcolor = "d0d0d0">번호</th>
+                            <th bgcolor = "d0d0d0">문항</th>
+                            <th bgcolor = "d0d0d0">사용자 응답</th>
+                            <th bgcolor = "d0d0d0">모델 예측</th>
+                            <th bgcolor = "d0d0d0">예측 성공 여부</th>
+                            <tr>
+                                <td><span id="gad-num1"></span></td>
+                                <td><span id="gad-q1"></span></td>
+                                <td><span id="user-a1"></span></td>
+                                <td><span id="model-p1"></span></td>
+                                <td><span id="model_tf1"></span></td>
+                            </tr>
+                            <tr>
+                                <td><span id="gad-num2"></span></td>
+                                <td><span id="gad-q2"></span></td>
+                                <td><span id="user-a2"></span></td>
+                                <td><span id="model-p2"></span></td>
+                                <td><span id="model_tf2"></span></td>
+                            </tr>
+                            <tr>
+                                <td><span id="gad-num3"></span></td>
+                                <td><span id="gad-q3"></span></td>
+                                <td><span id="user-a3"></span></td>
+                                <td><span id="model-p3"></span></td>
+                                <td><span id="model_tf3"></span></td>
+                            </tr>
+                            <tr>
+                                <td><span id="gad-num4"></span></td>
+                                <td><span id="gad-q4"></span></td>
+                                <td><span id="user-a4"></span></td>
+                                <td><span id="model-p4"></span></td>
+                                <td><span id="model_tf4"></span></td>
+                            </tr>
+                            <tr>
+                                <td><span id="gad-num5"></span></td>
+                                <td><span id="gad-q5"></span></td>
+                                <td><span id="user-a5"></span></td>
+                                <td><span id="model-p5"></span></td>
+                                <td><span id="model_tf5"></span></td>
+                            </tr>
+                            <tr>
+                                <td><span id="gad-num6"></span></td>
+                                <td><span id="gad-q6"></span></td>
+                                <td><span id="user-a6"></span></td>
+                                <td><span id="model-p6"></span></td>
+                                <td><span id="model_tf6"></span></td>
+                            </tr>
+                            <tr>
+                                <td><span id="gad-num7"></span></td>
+                                <td><span id="gad-q7"></span></td>
+                                <td><span id="user-a7"></span></td>
+                                <td><span id="model-p7"></span></td>
+                                <td><span id="model_tf7"></span></td>
+                            </tr>
+                        </table>
                     </div>
-                    <p>새로고침 후에 다시 시도해보세요!</p>
+                    0: '전혀 방해 받지 않았다', 1: '며칠 동안 방해 받았다', 2: '2주 중 절반 이상은 방해 받았다', 3: '거의 매일 방해 받았다'
                 </div>
                 
             </div>
@@ -169,24 +191,25 @@
         </div>
         <script>
             var QUESTION_LIST = [
-                    {'q_content':'PHQ-1. 평소 하던 일에 대한 흥미가 없어지거나 즐거움을 느끼지 못했다.'},
-                    {'q_content':'PHQ-2. 기분이 가라앉거나, 우울하거나, 희망이 없다고 느꼈다.'},
-                    {'q_content':'PHQ-3. 잠들기가 어렵거나 자주 깼다/혹은 너무 많이 잤다.'},
-                    {'q_content':'PHQ-4. 피곤하고 기운이 없었다.'},
-                    {'q_content':'PHQ-5. 평소보다 식욕이 줄었다/혹은 평소보다 많이 먹었다.'},
-                    {'q_content':'PHQ-6. 내가 잘못 했거나, 실패했다는 생각이 들었다/혹은 자신과 가족을 실망시켰다고 생각했다.'},
-                    {'q_content':'PHQ-7. 신문을 읽거나 TV를 보는 것과 같은 일상적인 일에도 집중 할 수가 없었다.'},
-                    {'q_content':'PHQ-8. 다른 사람들이 눈치 챌 정도로 평소보다 말과 행동이 느려졌다/혹은 너무 안절부절 못해서 가만히 앉아 있을 수 없었다.'},
-                    {'q_content':'PHQ-9. 차라리 죽는 것이 더 낫겠다고 생각했다/혹은 자해할 생각을 했다.'},
+                    {'q_content':'1. 평소 하던 일에 대한 흥미가 없어지거나 즐거움을 느끼지 못했다.'},
+                    {'q_content':'2. 기분이 가라앉거나, 우울하거나, 희망이 없다고 느꼈다.'},
+                    {'q_content':'3. 잠들기가 어렵거나 자주 깼다/혹은 너무 많이 잤다.'},
+                    {'q_content':'4. 피곤하고 기운이 없었다.'},
+                    {'q_content':'5. 평소보다 식욕이 줄었다/혹은 평소보다 많이 먹었다.'},
+                    {'q_content':'6. 내가 잘못 했거나, 실패했다는 생각이 들었다/혹은 자신과 가족을 실망시켰다고 생각했다.'},
+                    {'q_content':'7. 신문을 읽거나 TV를 보는 것과 같은 일상적인 일에도 집중 할 수가 없었다.'},
+                    {'q_content':'8. 다른 사람들이 눈치 챌 정도로 평소보다 말과 행동이 느려졌다/혹은 너무 안절부절 못해서 가만히 앉아 있을 수 없었다.'},
+                    {'q_content':'9. 차라리 죽는 것이 더 낫겠다고 생각했다/혹은 자해할 생각을 했다.'},
                 ];
+            //{'q_content':'PHQ-9. 차라리 죽는 것이 더 낫겠다고 생각했다/혹은 자해할 생각을 했다.'}
             var ANSWER_LIST = [
-                'GAD-1. 초조하거나 불안하거나 조마조마하게 느낀다.',
-                'GAD-2. 걱정하는 것을 멈추거나 조절할 수가 없다.',
-                'GAD-3. 여러 가지 것들에 대해 걱정을 너무 많이 한다.',
-                'GAD-4. 편하게 있기가 어렵다.',
-                'GAD-5. 너무 안절부절못해서 가만히 있기가 힘들다.',
-                'GAD-6. 쉽게 짜증이 나거나 쉽게 성을 내게 된다.',
-                'GAD-7. 마치 끔찍한 일이 생길 것처럼 두렵게 느껴진다.'
+                '초조하거나 불안하거나 조마조마하게 느낀다.',
+                '걱정하는 것을 멈추거나 조절할 수가 없다.',
+                '여러 가지 것들에 대해 걱정을 너무 많이 한다.',
+                '편하게 있기가 어렵다.',
+                '너무 안절부절못해서 가만히 있기가 힘들다.',
+                '쉽게 짜증이 나거나 쉽게 성을 내게 된다.',
+                '마치 끔찍한 일이 생길 것처럼 두렵게 느껴진다.'
             ];
             var GAD = [
                 'GAD-1',
@@ -259,7 +282,6 @@
                 };
                 
                 
-                
                 let q_content = ANSWER_LIST[next_index - 9];
                 document.querySelector("#tag").innerHTML = q_content;
                 document.querySelector("#q-number").innerHTML = index+1;                
@@ -284,6 +306,9 @@
                     next_index = parseInt(score['data'][0]) + 9;
                     model_pred[0].push(score['data'][0])
                     model_pred[1].push(score['data'][1])
+                    let index = parseInt(document.querySelector("#q-number").innerHTML)
+                    set_answer(index);
+                    
                 })
                 .catch(error => console.error('Error:', error));
             }
@@ -320,19 +345,21 @@
                 obj = document.getElementById("GAD_SUM");
                 obj.innerHTML = gadsum;
                 obj = document.getElementById("pred1");
-                obj.innerHTML = GAD[parseInt(model_pred[0][0])];
+                obj.innerHTML = parseInt(model_pred[0][0])+1;
                 obj = document.getElementById("pred2");
-                obj.innerHTML = GAD[parseInt(model_pred[0][1])];
+                obj.innerHTML = parseInt(model_pred[0][1])+1;
                 obj = document.getElementById("pred3");
-                obj.innerHTML = GAD[parseInt(model_pred[0][2])];
+                obj.innerHTML = parseInt(model_pred[0][2])+1;
                 obj = document.getElementById("pred4");
-                obj.innerHTML = GAD[parseInt(model_pred[0][3])];
+                obj.innerHTML = parseInt(model_pred[0][3])+1;
                 obj = document.getElementById("pred5");
-                obj.innerHTML = GAD[parseInt(model_pred[0][4])];
+                obj.innerHTML = parseInt(model_pred[0][4])+1;
                 obj = document.getElementById("pred6");
-                obj.innerHTML = GAD[parseInt(model_pred[0][5])];
+                obj.innerHTML = parseInt(model_pred[0][5])+1;
                 obj = document.getElementById("pred7");
-                obj.innerHTML = GAD[parseInt(model_pred[0][6])];
+                obj.innerHTML = parseInt(model_pred[0][6])+1;
+                obj = document.getElementById("gad-num1");
+                obj.innerHTML = parseInt(model_pred[0][0])+1;  
                 obj = document.getElementById("gad-q1");
                 obj.innerHTML = ANSWER_LIST[parseInt(model_pred[0][0])];  
                 var obj1 = document.getElementById("user-a1");
@@ -345,6 +372,8 @@
                 }else{
                     obj.innerHTML = '실패';
                 }
+                obj = document.getElementById("gad-num2");
+                obj.innerHTML = parseInt(model_pred[0][1])+1;
                 obj = document.getElementById("gad-q2");
                 obj.innerHTML = ANSWER_LIST[parseInt(model_pred[0][1])];  
                 obj1 = document.getElementById("user-a2");
@@ -357,6 +386,8 @@
                 }else{
                     obj.innerHTML = '실패';
                 }
+                obj = document.getElementById("gad-num3");
+                obj.innerHTML = parseInt(model_pred[0][2])+1;
                 obj = document.getElementById("gad-q3");
                 obj.innerHTML = ANSWER_LIST[parseInt(model_pred[0][2])];  
                 obj1 = document.getElementById("user-a3");
@@ -369,6 +400,8 @@
                 }else{
                     obj.innerHTML = '실패';
                 }
+                obj = document.getElementById("gad-num4");
+                obj.innerHTML = parseInt(model_pred[0][3])+1;
                 obj = document.getElementById("gad-q4");
                 obj.innerHTML = ANSWER_LIST[parseInt(model_pred[0][3])];  
                 obj1 = document.getElementById("user-a4");
@@ -381,6 +414,8 @@
                 }else{
                     obj.innerHTML = '실패';
                 }
+                obj = document.getElementById("gad-num5");
+                obj.innerHTML = parseInt(model_pred[0][4])+1;
                 obj = document.getElementById("gad-q5");
                 obj.innerHTML = ANSWER_LIST[parseInt(model_pred[0][4])];  
                 obj1 = document.getElementById("user-a5");
@@ -393,6 +428,8 @@
                 }else{
                     obj.innerHTML = '실패';
                 }
+                obj = document.getElementById("gad-num6");
+                obj.innerHTML = parseInt(model_pred[0][5])+1;
                 obj = document.getElementById("gad-q6");
                 obj.innerHTML = ANSWER_LIST[parseInt(model_pred[0][5])];  
                 obj1 = document.getElementById("user-a6");
@@ -405,6 +442,8 @@
                 }else{
                     obj.innerHTML = '실패';
                 }
+                obj = document.getElementById("gad-num7");
+                obj.innerHTML = parseInt(model_pred[0][6])+1;
                 obj = document.getElementById("gad-q7");
                 obj.innerHTML = ANSWER_LIST[parseInt(model_pred[0][6])];  
                 obj1 = document.getElementById("user-a7");
@@ -445,12 +484,9 @@
                         if(index<9){
                             setTimeout(function(){
                             set_question(index);
-                            },1000);
+                            },500);
                         }else{
                             get_next_index();
-                            setTimeout(function(){
-                            set_answer(index);
-                            },1000);
                         }                        
                     }
                     document.querySelector("#spinner").style.display = 'inline-block';
