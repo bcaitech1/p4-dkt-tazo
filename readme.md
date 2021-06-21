@@ -9,65 +9,21 @@
 ### 요구 사항
 
 ```
-미작성
-```
-
-## 파일 구성
-
-미작성
-
-### 저장소 구조
-
-```bash
-sever.py               # Python Flask를 이용한 통신 
-index.html             # javascript를 이용한 html
+server.py 구동을 위해서는 저장된 LGBM모델과 csv파일, preprocess.py가 필요합니다.
 ```
 
 ## 데이터 소개
 
-미작성
-
 ```
-미작성
+Mental health data of 776 Mexican medical students : CC BY 4.0 
 ```
-
-# 훈련, 평가, 추론
-
-### train
-
-미작성
-
-```
-미작성
-```
-
-### eval
-
-미작성
-
-```
-미작성
-```
-
-### inference
-
-미작성
-
-* 미작성
-
-* 미작성
-
-```
-미작성
-```
-
-### 베이스라인 모델 학습 결과
-
-미작성
 
 ## Things to know
 
-1. 
+1. 진단 및 설문:
+# PHQ-9(우울증 건강설문): Pfizer Inc. 복제, 번역, 전시 또는 배포를 위한 허가가 필요하지 않음.
+
+
 
 2. 
 
