@@ -20,11 +20,6 @@ Mental health data of 776 Mexican medical students : CC BY 4.0
 
 ## Things to know
 
-1. 진단 및 설문:
-# PHQ-9(우울증 건강설문): Pfizer Inc. 복제, 번역, 전시 또는 배포를 위한 허가가 필요하지 않음.
+1. PHQ-9(우울증 건강설문): Pfizer Inc. 복제, 번역, 전시 또는 배포를 위한 허가가 필요하지 않음.
 
-
-
-2. 
-
-3. 
+2. GAD-7(범불안장애 문항): Pfizer Inc. 복제, 번역, 전시 또는 배포를 위한 허가가 필요하지 않음.
