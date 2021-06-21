@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>범불안장애 7문항 척도 예측</title>
+        
+        
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous">
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+        <script src="/static/static/Number-Rolling-Animation-jQuery-numberAnimate/numberAnimate.js"></script>
+
+        <style>
+            html, body{
+                background-color: rgb(50, 50, 50);
+                color: rgb(240, 240, 240);
+            }
+            div,h1, h2, h3{
+                text-align: center;
+            }
+            h4{
+                text-align: left;
+                text-indent: -2em;
+                margin-left: 2em;
+            }
+            h5{
+                text-align: left;
+                font-size:20px;
+            }
+            h1{
+                font-size:50px;
+                border-bottom: 1px solid #eee;
+            }                                
+            button{
+                width: 100%;
+                height: 100px;
+            }
+            p{
+                font-size:30px;
+            }
+            #question-section{
+                transition: opacity 0s, opacity 0.5s linear;
+            }
+            #spinner{
+                position: absolute;
+                top: 0;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                margin: auto;
+            }
+            @media only screen and (max-device-width: 768px) {
+                h2{
+                    font-size:40px;
+                }
+                p{
+                    font-size:50px;
+                }
+                button{
+                    font-size:45px !important;
+                }
+            }
+            
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="row" style="padding:20px;">
+                <h1>범불안장애 7문항 척도 예측</h1>
+            </div>
+            <div id='start-string'>
+                <p>개인정보 수집 및 이용에 대한 안내</p>
+                <h5>1. 목적: 부스트캠프 AI Tech 1기 네트워킹데이 DKT-13 팀 발표 시연 및 모델 학습</h5>
+                <h5>2. 항목: 문항 반응 정보, 응답 시점</h5>
+                <h5>3. 보유기간: 6월 22일 23:55 까지</h5>
+            </div>
+            <button style="width: 70%" type="button" id='start-btn' class="btn btn-secondary">동의하고 시작하기</button>
+            <div class="spinner-grow" id='spinner' role="status" style="display:none;">
+                <span class="sr-only"></span>
+            </div>
+            <div class="row justify-content-lg-center">
+                <div class="col col-lg-auto" id="question-section" style="opacity:0" data-started='false'>
+                    <p style="font-size:20px;">
+                        아래의 문제를 읽고 최근 2주간 자신에게 해당된다고 생각하는 버튼을 클릭해주세요.
+                    </p>
+                    <h2><span id="q-number">1</span>번 문항</h2>
+                    <div class="game-box">
+                        <div class="">
+                            <p id="question-text"><span id="tag"></span></p>
+                        </div>
+                        <div class="row" style="margin-top:20px;">
+                            <div class="col-md-3 col-sm-6">
+                                <button type="button" data-answer='0' class="btn btn-secondary btn-lg answer-btn"><span id='butt1' style="pointer-events: none;"></span></button>
+                            </div>
+                            <div class="col-md-3 col-sm-6">
+                                <button type="button" data-answer='1' class="btn btn-secondary btn-lg answer-btn"><span id='butt2' style="pointer-events: none;"></span></button>
+                            </div>
+                            <div class="col-md-3 col-sm-6">
+                                <button type="button" data-answer='2' class="btn btn-secondary btn-lg answer-btn"><span id='butt3' style="pointer-events: none;"></span></button>
+                            </div>
+                            <div class="col-md-3 col-sm-6">
+                                <button type="button" data-answer='3' class="btn btn-secondary btn-lg answer-btn"><span id='butt4' style="pointer-events: none;"></span></button>
+                            </div>
+                        </div>
+                    </div>                    
+                </div>
+                <div id="result" style="display:none;">
+                    <h3>범불안장애 7문항에 대한 응답자의 응답과 모델의 예측은 다음과 같습니다.</h3>
+                    <div style="width: 80% margin-top:20px;">
+                        <h4>
+                            PHQ문항의 점수 : <span id="PHQ_SUM"></span> GAD문항의 점수 : <span id="GAD_SUM"></span>
+                        </h4>
+                        <h4>제시된 문항 순서 : 
+                        <span id="pred1"></span>
+                        <span id="pred2"></span>
+                        <span id="pred3"></span>
+                        <span id="pred4"></span>
+                        <span id="pred5"></span>
+                        <span id="pred6"></span>
+                        <span id="pred7"></span>
+                        </h4>
+                        <h4>
+                            문항 : <span id="gad-q1"></span><br>
+                            유저의 응답은 <span id="user-a1"></span>이고
+                            모델의 예측은 <span id="model-p1"></span>입니다.<br>
+                            모델은 예측에 <span id="model_tf1"></span>했습니다.
+                        </h4>
+                        <h4>
+                            문항 : <span id="gad-q2"></span><br>
+                            유저의 응답은 <span id="user-a2"></span>이고
+                            모델의 예측은 <span id="model-p2"></span>입니다.<br>
+                            모델은 예측에 <span id="model_tf2"></span>했습니다.
+                            </h4>
+                        <h4>
+                            문항 : <span id="gad-q3"></span><br>
+                            유저의 응답은 <span id="user-a3"></span>이고
+                            모델의 예측은 <span id="model-p3"></span>입니다.<br>
+                            모델은 예측에 <span id="model_tf3"></span>했습니다.
+                            </h4>
+                        <h4>
+                            문항 : <span id="gad-q4"></span><br>
+                            유저의 응답은 <span id="user-a4"></span>이고
+                            모델의 예측은 <span id="model-p4"></span>입니다.<br>
+                            모델은 예측에 <span id="model_tf4"></span>했습니다.
+                            </h4>
+                        <h4>
+                            문항 : <span id="gad-q5"></span><br>
+                            유저의 응답은 <span id="user-a5"></span>이고
+                            모델의 예측은 <span id="model-p5"></span>입니다.<br>
+                            모델은 예측에 <span id="model_tf5"></span>했습니다.
+                            </h4>
+                        <h4>
+                            문항 : <span id="gad-q6"></span><br>
+                            유저의 응답은 <span id="user-a6"></span>이고
+                            모델의 예측은 <span id="model-p6"></span>입니다.<br>
+                            모델은 예측에 <span id="model_tf6"></span>했습니다.
+                            </h4>
+                        <h4>
+                            문항 : <span id="gad-q7"></span><br>
+                            유저의 응답은 <span id="user-a7"></span>이고
+                            모델의 예측은 <span id="model-p7"></span>입니다.<br>
+                            모델은 예측에 <span id="model_tf7"></span>했습니다.
+                        </h4>
+                    </div>
+                    <p>새로고침 후에 다시 시도해보세요!</p>
+                </div>
+                
+            </div>
+            
+
+        </div>
+        <script>
+            var QUESTION_LIST = [
+                    {'q_content':'PHQ-1. 평소 하던 일에 대한 흥미가 없어지거나 즐거움을 느끼지 못했다.'},
+                    {'q_content':'PHQ-2. 기분이 가라앉거나, 우울하거나, 희망이 없다고 느꼈다.'},
+                    {'q_content':'PHQ-3. 잠들기가 어렵거나 자주 깼다/혹은 너무 많이 잤다.'},
+                    {'q_content':'PHQ-4. 피곤하고 기운이 없었다.'},
+                    {'q_content':'PHQ-5. 평소보다 식욕이 줄었다/혹은 평소보다 많이 먹었다.'},
+                    {'q_content':'PHQ-6. 내가 잘못 했거나, 실패했다는 생각이 들었다/혹은 자신과 가족을 실망시켰다고 생각했다.'},
+                    {'q_content':'PHQ-7. 신문을 읽거나 TV를 보는 것과 같은 일상적인 일에도 집중 할 수가 없었다.'},
+                    {'q_content':'PHQ-8. 다른 사람들이 눈치 챌 정도로 평소보다 말과 행동이 느려졌다/혹은 너무 안절부절 못해서 가만히 앉아 있을 수 없었다.'},
+                    {'q_content':'PHQ-9. 차라리 죽는 것이 더 낫겠다고 생각했다/혹은 자해할 생각을 했다.'},
+                ];
+            var ANSWER_LIST = [
+                'GAD-1. 초조하거나 불안하거나 조마조마하게 느낀다.',
+                'GAD-2. 걱정하는 것을 멈추거나 조절할 수가 없다.',
+                'GAD-3. 여러 가지 것들에 대해 걱정을 너무 많이 한다.',
+                'GAD-4. 편하게 있기가 어렵다.',
+                'GAD-5. 너무 안절부절못해서 가만히 있기가 힘들다.',
+                'GAD-6. 쉽게 짜증이 나거나 쉽게 성을 내게 된다.',
+                'GAD-7. 마치 끔찍한 일이 생길 것처럼 두렵게 느껴진다.'
+            ];
+            var GAD = [
+                'GAD-1',
+                'GAD-2',
+                'GAD-3',
+                'GAD-4',
+                'GAD-5',
+                'GAD-6',
+                'GAD-7'
+            ]
+            var BUTTON_LIST = [[
+                '없음',
+                '2-6일',
+                '7-12일',
+                '매일'
+            ],[
+                '전혀 방해 받지 않았다',
+                '며칠 동안 방해 받았다',
+                '2주 중 절반 이상은 방해 받았다',
+                '거의 매일 방해 받았다'
+            ]]
+            var answers = [['-1', '-1', '-1', '-1', '-1', '-1', '-1', '-1', '-1', '-1', '-1', '-1', '-1', '-1', '-1', '-1'], ['-1', '-1', '-1']];
+            var next_index = -1;
+            var model_pred = [[], []];
+            
+            function get_userid(){
+                
+                fetch('/get_userid', {
+                    method: 'POST', // or 'PUT'
+                    body: JSON.stringify(answers), // data can be `string` or {object}!
+                    headers:{
+                        'Content-Type': 'application/json'
+                    }
+                }).then(res => res.json())
+                .then(response => {
+                    var score = response;
+                    answers[1][0] = score['data'][0];
+                })
+                .catch(error => console.error('Error:', error));
+            }
+            
+            function set_question(index){
+                
+                if(index == 0){
+                    document.querySelector("#butt1").innerHTML = BUTTON_LIST[0][0];
+                    document.querySelector("#butt2").innerHTML = BUTTON_LIST[0][1];
+                    document.querySelector("#butt3").innerHTML = BUTTON_LIST[0][2];
+                    document.querySelector("#butt4").innerHTML = BUTTON_LIST[0][3];
+                };
+                
+                let q_content = QUESTION_LIST[index].q_content;
+                document.querySelector("#tag").innerHTML = q_content;
+                document.querySelector("#q-number").innerHTML = index+1;
+                next_index += 1;
+                
+                if (document.querySelector("#question-section").dataset.started !=='false'){
+                    document.querySelector("#spinner").style.display = 'none';
+                    document.querySelector("#question-section").style.opacity = 1;
+                    isClciked=false;
+                }
+            }
+            
+            function set_answer(index){
+                
+                if(index == 9){
+                    document.querySelector("#butt1").innerHTML = BUTTON_LIST[1][0];
+                    document.querySelector("#butt2").innerHTML = BUTTON_LIST[1][1];
+                    document.querySelector("#butt3").innerHTML = BUTTON_LIST[1][2];
+                    document.querySelector("#butt4").innerHTML = BUTTON_LIST[1][3];
+                };
+                
+                
+                
+                let q_content = ANSWER_LIST[next_index - 9];
+                document.querySelector("#tag").innerHTML = q_content;
+                document.querySelector("#q-number").innerHTML = index+1;                
+                                
+                if (document.querySelector("#question-section").dataset.started !=='false'){
+                    document.querySelector("#spinner").style.display = 'none';
+                    document.querySelector("#question-section").style.opacity = 1;
+                    isClciked=false;
+                }
+            }
+            
+            function get_next_index(){
+                fetch('/test_get_score', {
+                    method: 'POST', // or 'PUT'
+                    body: JSON.stringify(answers), // data can be `string` or {object}!
+                    headers:{
+                        'Content-Type': 'application/json'
+                    }
+                }).then(res => res.json())
+                .then(response => {
+                    var score = response;
+                    next_index = parseInt(score['data'][0]) + 9;
+                    model_pred[0].push(score['data'][0])
+                    model_pred[1].push(score['data'][1])
+                })
+                .catch(error => console.error('Error:', error));
+            }
+            
+            function last_query(){
+                
+                fetch('/last_query', {
+                    method: 'POST', // or 'PUT'
+                    body: JSON.stringify(answers), // data can be `string` or {object}!
+                    headers:{
+                        'Content-Type': 'application/json'
+                    }
+                }).then(res => res.json())
+                .then(response => {
+                })
+                .catch(error => console.error('Error:', error));
+            }
+            
+            function get_score(){
+                            
+                document.querySelector("#spinner").style.display = 'none';
+                document.querySelector("#question-section").style.display = 'none';
+                document.querySelector("#result").style.display = 'block';
+                var phqsum = 0;
+                for(var i = 0; i < 9; i++){
+                    phqsum += parseInt(answers[0][i]);
+                }
+                var gadsum = 0;
+                for(var i = 9; i < 16; i++){
+                    gadsum += parseInt(answers[0][i]);
+                }
+                var obj = document.getElementById("PHQ_SUM");
+                obj.innerHTML = phqsum;
+                obj = document.getElementById("GAD_SUM");
+                obj.innerHTML = gadsum;
+                obj = document.getElementById("pred1");
+                obj.innerHTML = GAD[parseInt(model_pred[0][0])];
+                obj = document.getElementById("pred2");
+                obj.innerHTML = GAD[parseInt(model_pred[0][1])];
+                obj = document.getElementById("pred3");
+                obj.innerHTML = GAD[parseInt(model_pred[0][2])];
+                obj = document.getElementById("pred4");
+                obj.innerHTML = GAD[parseInt(model_pred[0][3])];
+                obj = document.getElementById("pred5");
+                obj.innerHTML = GAD[parseInt(model_pred[0][4])];
+                obj = document.getElementById("pred6");
+                obj.innerHTML = GAD[parseInt(model_pred[0][5])];
+                obj = document.getElementById("pred7");
+                obj.innerHTML = GAD[parseInt(model_pred[0][6])];
+                obj = document.getElementById("gad-q1");
+                obj.innerHTML = ANSWER_LIST[parseInt(model_pred[0][0])];  
+                var obj1 = document.getElementById("user-a1");
+                obj1.innerHTML = answers[0][parseInt(model_pred[0][0])+9];  
+                var obj2 = document.getElementById("model-p1");
+                obj2.innerHTML = model_pred[1][0];
+                obj = document.getElementById("model_tf1");
+                if(parseInt(obj1.innerHTML) == parseInt(obj2.innerHTML)){
+                    obj.innerHTML = '성공';
+                }else{
+                    obj.innerHTML = '실패';
+                }
+                obj = document.getElementById("gad-q2");
+                obj.innerHTML = ANSWER_LIST[parseInt(model_pred[0][1])];  
+                obj1 = document.getElementById("user-a2");
+                obj1.innerHTML = answers[0][parseInt(model_pred[0][1])+9];  
+                obj2 = document.getElementById("model-p2");
+                obj2.innerHTML = model_pred[1][1];
+                obj = document.getElementById("model_tf2");
+                if(parseInt(obj1.innerHTML) == parseInt(obj2.innerHTML)){
+                    obj.innerHTML = '성공';
+                }else{
+                    obj.innerHTML = '실패';
+                }
+                obj = document.getElementById("gad-q3");
+                obj.innerHTML = ANSWER_LIST[parseInt(model_pred[0][2])];  
+                obj1 = document.getElementById("user-a3");
+                obj1.innerHTML = answers[0][parseInt(model_pred[0][2])+9];  
+                obj2 = document.getElementById("model-p3");
+                obj2.innerHTML = model_pred[1][2];
+                obj = document.getElementById("model_tf3");
+                if(parseInt(obj1.innerHTML) == parseInt(obj2.innerHTML)){
+                    obj.innerHTML = '성공';
+                }else{
+                    obj.innerHTML = '실패';
+                }
+                obj = document.getElementById("gad-q4");
+                obj.innerHTML = ANSWER_LIST[parseInt(model_pred[0][3])];  
+                obj1 = document.getElementById("user-a4");
+                obj1.innerHTML = answers[0][parseInt(model_pred[0][3])+9];  
+                obj2 = document.getElementById("model-p4");
+                obj2.innerHTML = model_pred[1][3];
+                obj = document.getElementById("model_tf4");
+                if(parseInt(obj1.innerHTML) == parseInt(obj2.innerHTML)){
+                    obj.innerHTML = '성공';
+                }else{
+                    obj.innerHTML = '실패';
+                }
+                obj = document.getElementById("gad-q5");
+                obj.innerHTML = ANSWER_LIST[parseInt(model_pred[0][4])];  
+                obj1 = document.getElementById("user-a5");
+                obj1.innerHTML = answers[0][parseInt(model_pred[0][4])+9];  
+                obj2 = document.getElementById("model-p5");
+                obj2.innerHTML = model_pred[1][4];
+                obj = document.getElementById("model_tf5");
+                if(parseInt(obj1.innerHTML) == parseInt(obj2.innerHTML)){
+                    obj.innerHTML = '성공';
+                }else{
+                    obj.innerHTML = '실패';
+                }
+                obj = document.getElementById("gad-q6");
+                obj.innerHTML = ANSWER_LIST[parseInt(model_pred[0][5])];  
+                obj1 = document.getElementById("user-a6");
+                obj1.innerHTML = answers[0][parseInt(model_pred[0][5])+9];  
+                obj2 = document.getElementById("model-p6");
+                obj2.innerHTML = model_pred[1][5];
+                obj = document.getElementById("model_tf6");
+                if(parseInt(obj1.innerHTML) == parseInt(obj2.innerHTML)){
+                    obj.innerHTML = '성공';
+                }else{
+                    obj.innerHTML = '실패';
+                }
+                obj = document.getElementById("gad-q7");
+                obj.innerHTML = ANSWER_LIST[parseInt(model_pred[0][6])];  
+                obj1 = document.getElementById("user-a7");
+                obj1.innerHTML = answers[0][parseInt(model_pred[0][6])+9];  
+                obj2 = document.getElementById("model-p7");
+                obj2.innerHTML = model_pred[1][6];
+                obj = document.getElementById("model_tf7");
+                if(parseInt(obj1.innerHTML) == parseInt(obj2.innerHTML)){
+                    obj.innerHTML = '성공';
+                }else{
+                    obj.innerHTML = '실패';
+                }                
+            }
+
+            var isClciked = false;
+            document.addEventListener('click', function (event) {
+                if (!event.target.closest('.btn')) return;
+                if (event.target.closest('.answer-btn')){
+                    if (isClciked) return;
+                    isClciked=true;
+                    
+                    event.target.dataset.clicked = true;
+                    var answer = event.target.getAttribute('data-answer');
+                    var index = parseInt(document.querySelector("#q-number").innerHTML);
+                        
+                    answers[0][next_index] = answer;
+                    answers[1][1] = next_index;
+                    answers[1][2] = answer;
+                    if(answers[1][0] == '-1'){
+                        get_userid();
+                    }
+                    if (index==16){
+                        setTimeout(function(){
+                            last_query();
+                            get_score();
+                        },1000);
+                    }else{
+                        if(index<9){
+                            setTimeout(function(){
+                            set_question(index);
+                            },1000);
+                        }else{
+                            get_next_index();
+                            setTimeout(function(){
+                            set_answer(index);
+                            },1000);
+                        }                        
+                    }
+                    document.querySelector("#spinner").style.display = 'inline-block';
+                    document.querySelector("#question-section").style.opacity = 0;
+                }else if (event.target.closest('#start-btn')){
+                    document.querySelector("#question-section").dataset.started = true;
+                    document.querySelector("#start-string").style.display='none';
+                    document.querySelector("#start-btn").style.display='none';
+                    document.querySelector("#spinner").style.display = 'inline-block';
+                    set_question(0);
+                }
+            });
+
+        </script>
+    </body>
+</html>
