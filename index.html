@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>범불안장애 7문항 척도 예측</title>
+        <title>우울증 건강설문과 범불안장애 문항 척도 예측</title>
         
         
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous">
@@ -10,14 +10,17 @@
 
         <style>
             html, body{
-                background-color: rgb(36, 19, 15);
-                color: rgb(240, 240, 240);
+                background-color: rgb(255, 255, 255);
+                color: rgb(0, 0, 0);
             }
             div,h1, h2, h3, h4{
                 text-align: center;
             }
+            h4{
+                text-align: left;
+            }
             h1{
-                font-size:60px;
+                font-size:35px;
                 border-bottom: 1px solid #eee;
             }                                
             button{
@@ -55,12 +58,12 @@
     <body>
         <div class="container">
             <div class="row" style="padding:20px;">
-                <h1>범불안장애 7문항 척도 예측</h1>
+                <h1>우울증 건강설문 9문항을 이용한<br> 범불안장애 설문 7문항 답변 예측</h1>
             </div>
             <p style="font-size:20px;">
-                아래의 문제를 읽고 최근 2주간 자신에게 해당된다고 생각하는 버튼을 클릭해주세요.
+                최근 2주간 자신에게 해당된다고 생각되는 버튼을 눌러주세요.
             </p>
-            <button type="button" id='start-btn' class="btn btn-secondary">시작</button>
+            <button style="width: 70%" type="button" id='start-btn' class="btn btn-secondary">시작</button>
             <div class="spinner-grow" id='spinner' role="status" style="display:none;">
                 <span class="sr-only"></span>
             </div>
@@ -90,15 +93,47 @@
                 </div>
                 <div id="result" style="display:none;">
                     <h3>모델이 예측한 당신의 응답입니다.</h3>
-                    <h4>1. 초조하거나 불안하거나 조마조마하게 느낀다. : <span id="value1"></span></h4><br>
-                    <h4>2. 걱정하는 것을 멈추거나 조절할 수가 없다. : <span id="value2"></span></h4><br>
-                    <h4>3. 여러 가지 것들에 대해 걱정을 너무 많이 한다. : <span id="value3"></span></h4><br>
-                    <h4>4. 편하게 있기가 어렵다. : <span id="value4"></span></h4><br>
-                    <h4>5. 너무 안절부절못해서 가만히 있기가 힘들다. : <span id="value5"></span></h4><br>
-                    <h4>6. 쉽게 짜증이 나거나 쉽게 성을 내게 된다. : <span id="value6"></span></h4><br>
-                    <h4>7. 마치 끔찍한 일이 생길 것처럼 두렵게 느껴진다. : <span id="value7"></span></h4><br>
-                    <p>새로고침 후에 다시 시도해보세요!</p>
-                </div>
+                    <table border="1", width = "70%", bgcolor = "E0E0E0", align = "center">
+                        <th></th>
+                        <th>문항</th>
+                        <th>모델 예측</th>
+                        <tr>
+                            <td>1</td>
+                            <td>초조하거나 불안하거나 조마조마하게 느낀다.</td>
+                            <td><span id="value1"></span></td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>걱정하는 것을 멈추거나 조절할 수가 없다.</td>
+                            <td><span id="value2"></span></td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td>여러 가지 것들에 대해 걱정을 너무 많이 한다.</td>
+                            <td><span id="value3"></span></td>
+                        </tr>
+                        <tr>
+                            <td>4</td>
+                            <td>편하게 있기가 어렵다.</td>
+                            <td><span id="value4"></span></td>
+                        </tr>
+                        <tr>
+                            <td>5</td>
+                            <td>너무 안절부절못해서 가만히 있기가 힘들다.</td>
+                            <td><span id="value5"></span></td>
+                        </tr>
+                        <tr>
+                            <td>6</td>
+                            <td>쉽게 짜증이 나거나 쉽게 성을 내게 된다.</td>
+                            <td><span id="value6"></span></td>
+                        </tr>
+                        <tr>
+                            <td>7</td>
+                            <td>마치 끔찍한 일이 생길 것처럼 두렵게 느껴진다.</td>
+                            <td><span id="value7"></span></td>
+                        </tr>
+                    </table>
+                    
                 
             </div>
             
