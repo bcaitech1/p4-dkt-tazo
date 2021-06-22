@@ -23,8 +23,6 @@
             }
             h5{
                 text-align: left;
-                text-indent: -2em;
-                margin-left: 2em;
                 font-size:20px;
             }
             h1{
@@ -72,11 +70,16 @@
                 <h1>우울증 건강설문 9문항을 이용한<br> 범불안장애 설문 7문항 순서 추천</h1>
             </div>
             <div id='start-string'>
-                <p>개인정보 수집 및 이용에 대한 안내</p>
+                <h5>
+                    본 설문은 우울증 건강설문 9문항의 응답결과를 바탕으로 범불안장애 설문 7문항의 순서를 추천하는 서비스입니다.<br>
+                    우울증 건강설문 9문항을 응답을 완료하면 9문항에 대한 응답결과를 바탕으로 추천된 범불안장애 설문 문항이 제시됩니다.<br>
+                    범불안장애 설문 문항에 응답을 하면 이전까지 응답한 응답결과를 바탕으로 추천된 범불안장애 설문 문항이 제시됩니다.<br>
+                </h5>
+                <h5><b>[개인정보 수집 및 이용에 대한 안내]</b></h5>
                 <h5>1. 개인정보 수집 항목: 문항 번호, 문항에 대한 응답</h5>
                 <h5>2. 개인정보 이용 목적:<br>
-                    부스트캠프 AI Tech 1기 네트워킹데이 DKT-13 팀 발표 시연 서비스에 이용<br>
-                    문항 반응 정보를 이용한 서비스 모델의 재학습에 이용
+                    - 부스트캠프 AI Tech 1기 네트워킹데이 DKT-13 팀 발표 시연 서비스에 이용<br>
+                    - 문항에 대한 응답을 저장한 후 모델의 재학습에 사용
                 </h5>
                 <h5>3. 보유기간: 6월 22일 23:55 까지</h5>
             </div>
@@ -113,7 +116,7 @@
                 <div id="result" style="display:none;">
                     <div style="width: 80% margin-top:20px;">
                         <h4>
-                            우울중 건강설문의 점수 : <span id="PHQ_SUM"></span>, 범불안장애 설문의 점수 : <span id="GAD_SUM"></span>
+                            우울증 건강설문의 점수 : <span id="PHQ_SUM"></span>, 범불안장애 설문의 점수 : <span id="GAD_SUM"></span>
                         </h4>
                         <h4>모델이 추천한 범불안장애 설문 문항 순서 : 
                         <span id="pred1"></span>,
@@ -201,7 +204,6 @@
                     {'q_content':'8. 다른 사람들이 눈치 챌 정도로 평소보다 말과 행동이 느려졌다/혹은 너무 안절부절 못해서 가만히 앉아 있을 수 없었다.'},
                     {'q_content':'9. 차라리 죽는 것이 더 낫겠다고 생각했다/혹은 자해할 생각을 했다.'},
                 ];
-            //{'q_content':'PHQ-9. 차라리 죽는 것이 더 낫겠다고 생각했다/혹은 자해할 생각을 했다.'}
             var ANSWER_LIST = [
                 '초조하거나 불안하거나 조마조마하게 느낀다.',
                 '걱정하는 것을 멈추거나 조절할 수가 없다.',
@@ -341,9 +343,9 @@
                     gadsum += parseInt(answers[0][i]);
                 }
                 var obj = document.getElementById("PHQ_SUM");
-                obj.innerHTML = phqsum;
+                obj.innerHTML = phqsum*3;
                 obj = document.getElementById("GAD_SUM");
-                obj.innerHTML = gadsum;
+                obj.innerHTML = gadsum*3;
                 obj = document.getElementById("pred1");
                 obj.innerHTML = parseInt(model_pred[0][0])+1;
                 obj = document.getElementById("pred2");
